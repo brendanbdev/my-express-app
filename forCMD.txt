@@ -1,0 +1,1 @@
+cd C:\Node.JS Projects\myExpressApp && node server.js

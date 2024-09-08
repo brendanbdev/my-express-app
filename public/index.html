@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Data Display</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h1>Database Tables Data</h1>
+    <div id="data-container"></div>
+
+    <h2>Create Data</h2>
+    <form id="create-form">
+        <label>Table Name:</label>
+        <input type="text" id="create-table" required>
+        <label>Data (JSON format):</label>
+        <input type="text" id="create-data" required>
+        <button type="submit">Create</button>
+    </form>
+
+    <h2>Update Data</h2>
+    <form id="update-form">
+        <label>Table Name:</label>
+        <input type="text" id="update-table" required>
+        <label>ID:</label>
+        <input type="text" id="update-id" required>
+        <label>Data (JSON format):</label>
+        <input type="text" id="update-data" required>
+        <button type="submit">Update</button>
+    </form>
+
+    <h2>Delete Data</h2>
+    <form id="delete-form">
+        <label>Table Name:</label>
+        <input type="text" id="delete-table" required>
+        <label>ID:</label>
+        <input type="text" id="delete-id" required>
+        <button type="submit">Delete</button>
+    </form>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
