@@ -97,6 +97,18 @@ console.log('User input:', userInput);
 as images and stylesheets) has completely loaded.
 */
 window.onload = function () {
+    // Variable to store table names
+    let tableNames = [];
+
+    // Create a mapping of table names to user-friendly names
+    const tableNameMappings = {
+        branch: "Branches",
+        branch_supplier: "Branch Suppliers",
+        client: "Clients",
+        employee: "Employees",
+        works_with: "Relationships",
+    };
+
     /*
     'fetch('/all-data')' initiates a GET request to the '/all-data' endpoint on the server. This
     endpoint is expected to return a JSON response containing data from the database.
@@ -134,6 +146,9 @@ window.onload = function () {
             is because each of these anonymous functions is a table.
             */
             data.forEach(table => {
+                // Store table names in the tableNames array
+                tableNames.push(table.tableName);
+                // create array above and append table names?
                 // 'table' is an HTML tag.
                 const tableElement = document.createElement('table');
                 // This sets the class of the table element to 'table-grid' for styling purposes.
@@ -158,6 +173,26 @@ window.onload = function () {
                 html += '</tbody>';
                 tableElement.innerHTML = html;
                 container.appendChild(tableElement);
+            });
+
+            const tableSelectIds = [
+                'table-select-create',
+                'table-select-update',
+                'table-select-delete',
+            ];
+
+            tableSelectIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (!element) {
+                    console.warn(`Element with ID '${id}' not found.`);
+                } else {
+                    tableNames.forEach(name => {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = tableNameMappings[name] || `(${name})`;
+                        element.appendChild(option);
+                    });
+                }
             });
         })
         .catch(error => console.error('Error loading the data:', error));

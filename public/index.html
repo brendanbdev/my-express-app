@@ -15,7 +15,9 @@
     <h2>Create Data</h2>
     <form id="create-form">
         <label>Table Name:</label>
-        <input type="text" id="create-table" required>
+        <select name="table" id="table-select-create">
+            <option value="">--Please choose a table--</option>
+        </select>
         <label>Data (JSON format):</label>
         <input type="text" id="create-data" required>
         <button type="submit">Create</button>
@@ -24,7 +26,9 @@
     <h2>Update Data</h2>
     <form id="update-form">
         <label>Table Name:</label>
-        <input type="text" id="update-table" required>
+        <select name="table" id="table-select-update">
+            <option value="">--Please choose a table--</option>
+        </select>
         <label>ID:</label>
         <input type="text" id="update-id" required>
         <label>Data (JSON format):</label>
@@ -35,7 +39,9 @@
     <h2>Delete Data</h2>
     <form id="delete-form">
         <label>Table Name:</label>
-        <input type="text" id="delete-table" required>
+        <select name="table" id="table-select-delete">
+            <option value="">--Please choose a table--</option>
+        </select>
         <label>ID:</label>
         <input type="text" id="delete-id" required>
         <button type="submit">Delete</button>

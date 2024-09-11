@@ -236,7 +236,7 @@ app.get('/all-data', async (req, res) => {
         'promises' array is resolved, that element will be an anonymous object that will contain two
         attributes, 'tableName' and 'data'. 'tableName' is just a string which is the name of the table,
         and 'data' is an array of 'RowDataPacket' objects from MySQL where columns are attributes, and
-        rows are the corrisponding values. So, each of these anonymous functions is a table.
+        rows are the corresponding values. So, each of these anonymous functions is a table.
         */
         const allData = await Promise.all(promises);
         console.log('ALL DATA:', allData);
@@ -250,6 +250,11 @@ app.get('/all-data', async (req, res) => {
         console.error(error);
         res.status(500).send("Error fetching data");
     }
+});
+
+// get all table names
+app.get('/table-names', (req, res) => {
+
 });
 
 // Endpoint to create data
@@ -343,6 +348,18 @@ app.put('/update-data', (req, res) => {
     });
 });
 
+app.delete('/delete-data', (req, res) => {
+    const { tableName, id } = req.body;
+
+    const query = `DELETE FROM ${tableName} WHERE id = ${mysql.escape(id)}`;
+
+    pool.query(query, (error, results) => {
+        if (error) return res.status(500).send("Error deleting data");
+        res.send("Data deleted successfully");
+    });
+});
+
+// new delete
 app.delete('/delete-data', (req, res) => {
     const { tableName, id } = req.body;
 
