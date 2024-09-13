@@ -97,8 +97,6 @@ app.get('/all-data', async (req, res) => {
                 promise, which can then be caught by the calling code (in the 'try...catch' block).
                 */
                 if (error) return reject(error);
-                // Debugging: Log the entire results array
-                console.log('Results:', results);
                 /*
                 'results' (an array):
                 [
@@ -111,8 +109,6 @@ app.get('/all-data', async (req, res) => {
                 ]
                 */
                 const tables = results.map(row => {
-                    // Debugging: Log each row
-                    console.log('Row:', row);
                     /*
                     'row' (elements in the 'results' array, which are 'RowDataPacket' objects with an
                     attribute named 'Tables_in_my_first_database' with a value of a String which is a
@@ -126,8 +122,6 @@ app.get('/all-data', async (req, res) => {
                     */
                     return Object.values(row)[0];
                 });
-                // Debugging: Log the tables array
-                console.log('Tables:', tables);
                 /*
                 'tables' (array of Strings returned from 'results.map(row => Object.values(row)[0])'):
                 [
@@ -163,10 +157,7 @@ app.get('/all-data', async (req, res) => {
                 'results' is an array (produced from the query `SELECT * FROM ${tableName}`) of
                 'RowDataPacket' objects where columns are attributes, and rows are the corresponding
                 values.
-                */
-                // Debugging: Log the table data object
-                console.log('Table data:', { tableName, data: results });
-                /*
+
                 Table data object for the 'branch' table:
                 {
                     tableName: 'branch',
@@ -229,7 +220,6 @@ app.get('/all-data', async (req, res) => {
         ]
         */
         const promises = tableNames.map(tableName => getTableData(tableName));
-        console.log('promises array:', promises);
         /*
         'await Promise.all(promises)' will return the resolved or rejected value of a single Promise
         which will first execute the array of Promises called 'promises'. If a Promise element in the
@@ -239,7 +229,6 @@ app.get('/all-data', async (req, res) => {
         rows are the corresponding values. So, each of these anonymous functions is a table.
         */
         const allData = await Promise.all(promises);
-        console.log('ALL DATA:', allData);
         /*
         'res' is the response object in Express. It represents the HTTP response that an Express app
         sends when it receives an HTTP request. '.json(...)' is a method provided by the Express response
@@ -259,7 +248,6 @@ app.get('/table-names', (req, res) => {
 
 // Endpoint to create data
 app.post('/create-data', (req, res) => {
-    console.log("req.body:", req.body);
     /*
     JavaScript destructuring assignment extracting properties from the object that comes from 'req.body'.
     (If you wanted custom names for these variables, the syntax would be:
@@ -349,21 +337,9 @@ app.put('/update-data', (req, res) => {
 });
 
 app.delete('/delete-data', (req, res) => {
-    const { tableName, id } = req.body;
+    const { tableName, id, idColumnName } = req.body;
 
-    const query = `DELETE FROM ${tableName} WHERE id = ${mysql.escape(id)}`;
-
-    pool.query(query, (error, results) => {
-        if (error) return res.status(500).send("Error deleting data");
-        res.send("Data deleted successfully");
-    });
-});
-
-// new delete
-app.delete('/delete-data', (req, res) => {
-    const { tableName, id } = req.body;
-
-    const query = `DELETE FROM ${tableName} WHERE id = ${mysql.escape(id)}`;
+    const query = `DELETE FROM ${tableName} WHERE ${idColumnName} = ${mysql.escape(id)}`;
 
     pool.query(query, (error, results) => {
         if (error) return res.status(500).send("Error deleting data");

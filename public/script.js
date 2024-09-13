@@ -291,11 +291,12 @@ window.onload = function () {
         event.preventDefault();
         const tableName = document.getElementById('table-select-delete').value;
         const id = document.getElementById('id-select-delete').value;
+        const idColumnName = tableDataForDeleting[tableName].idColumnName;
 
         fetch('/delete-data', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tableName, id })
+            body: JSON.stringify({ tableName, id, idColumnName })
         })
             .then(response => response.text())
             .then(message => alert(message))
