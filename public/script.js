@@ -97,8 +97,29 @@ console.log('User input:', userInput);
 as images and stylesheets) has completely loaded.
 */
 window.onload = function () {
+    const tableSelectIds = [
+        'table-select-create',
+        'table-select-update',
+        'table-select-delete',
+    ];
+
     // Variable to store table names
     let tableNames = [];
+
+    let tableDataForDeleting = {
+        branch: {
+            idColumnName: "branch_id",
+            ids: []
+        },
+        client: {
+            idColumnName: "client_id",
+            ids: []
+        },
+        employee: {
+            idColumnName: "emp_id",
+            ids: []
+        },
+    }
 
     // Create a mapping of table names to user-friendly names
     const tableNameMappings = {
@@ -108,6 +129,38 @@ window.onload = function () {
         employee: "Employees",
         works_with: "Relationships",
     };
+
+    const tableSelect = document.getElementById('table-select-delete');
+    const idSelectDeleteElement = document.getElementById("id-select-delete");
+
+            // Function to update the column-select options based on the selected table
+    function updateColumnOptions(table) {
+        if(table === "") {
+            idSelectDeleteElement.innerHTML = '<option value="">--Please choose a table--</option>';
+            return
+        }
+
+        // Clear the existing options
+        idSelectDeleteElement.innerHTML = '<option value="">--Please choose an id--</option>';
+
+        if (tableDataForDeleting[table]) {
+            // Add new options based on the selected table
+            tableDataForDeleting[table].ids.forEach(id => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = id;
+                idSelectDeleteElement.appendChild(option);
+            });
+        } else {
+            idSelectDeleteElement.innerHTML = '<option value="">--Please choose a different table--</option>';
+        }
+    }
+
+    // Listen for changes on the table-select element
+    tableSelect.addEventListener('change', function() {
+        const selectedTable = this.value;
+        updateColumnOptions(selectedTable); // Update column options based on the selected table
+    });
 
     /*
     'fetch('/all-data')' initiates a GET request to the '/all-data' endpoint on the server. This
@@ -146,9 +199,18 @@ window.onload = function () {
             is because each of these anonymous functions is a table.
             */
             data.forEach(table => {
+                let tableName = table.tableName;
+
                 // Store table names in the tableNames array
-                tableNames.push(table.tableName);
-                // create array above and append table names?
+                tableNames.push(tableName);
+
+                const tableInfo = tableDataForDeleting[tableName];
+
+                if (tableInfo) {
+                    const { idColumnName, ids } = tableInfo;
+                    table.data?.forEach(entry => ids.push(entry[idColumnName]));
+                }
+
                 // 'table' is an HTML tag.
                 const tableElement = document.createElement('table');
                 // This sets the class of the table element to 'table-grid' for styling purposes.
@@ -174,12 +236,6 @@ window.onload = function () {
                 tableElement.innerHTML = html;
                 container.appendChild(tableElement);
             });
-
-            const tableSelectIds = [
-                'table-select-create',
-                'table-select-update',
-                'table-select-delete',
-            ];
 
             tableSelectIds.forEach(id => {
                 const element = document.getElementById(id);
@@ -233,8 +289,8 @@ window.onload = function () {
     // Handle form submissions for deleting data
     document.getElementById('delete-form').addEventListener('submit', function (event) {
         event.preventDefault();
-        const tableName = document.getElementById('delete-table').value;
-        const id = document.getElementById('delete-id').value;
+        const tableName = document.getElementById('table-select-delete').value;
+        const id = document.getElementById('id-select-delete').value;
 
         fetch('/delete-data', {
             method: 'DELETE',
